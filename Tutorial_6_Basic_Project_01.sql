@@ -212,3 +212,103 @@ GROUP BY emp_id;
 SELECT SUM(total_sales), client_id FROM works_with
 GROUP BY client_id;
 
+# WILDCARDS
+
+#Task 1 Find and client who are an LLC
+
+SELECT * FROM client
+WHERE client_name LIKE '%LLC';
+
+#Task 2 Find any branch suppliers who are in the label business
+
+SELECT * FROM branch_supplier
+WHERE supplier_name LIKE '%Label%';
+
+#Task 3 Find any employee born in february
+
+SELECT * FROM employee
+WHERE birth_day LIKE '_____02___';
+
+#Task 4 Find any client who are schools
+
+SELECT * FROM client
+WHERE client_name LIKE '%school%';
+
+# UNION
+
+#Task 1 Find a list of employee and branch names
+
+SELECT first_name AS all_names FROM employee
+UNION 
+SELECT branch_name FROM branch;
+
+#Task 2 Find a list of all clients and branch suppliers names
+
+SELECT client_name AS client_and_branch_suppliers_name FROM client
+UNION
+SELECT supplier_name FROM branch_supplier;
+
+# Task 3 Find a list of all money spent or earned by the company
+
+SELECT salary AS Money_transactions FROM employee
+UNION
+SELECT total_sales FROM works_with;
+
+#Task 4 Find a total amount of money spend and earn
+
+SELECT SUM(money) FROM (
+	SELECT salary AS money FROM employee UNION ALL
+    SELECT total_sales AS money FROM works_with
+) AS Total;
+
+# JOINS
+
+# Add this data for join examples
+INSERT INTO branch VALUES(4, 'Buffalo', NULL, NULL);
+
+#Task 1 Find all branches and the names of their managers
+
+SELECT employee.emp_id, employee.first_name, employee.last_name, branch.branch_name FROM employee
+JOIN branch
+ON employee.emp_id = branch.mgr_id;
+
+#Task 2 Find all branches and the names of their managers as well as  names of every employee
+
+SELECT employee.emp_id, employee.first_name, employee.last_name, branch.branch_name FROM employee
+LEFT JOIN branch
+ON employee.emp_id = branch.mgr_id;
+
+#Task 3 Find all branches and the names of their managers as well as  every branch who has not any manager
+
+SELECT employee.emp_id, employee.first_name, employee.last_name, branch.branch_name FROM employee
+RIGHT JOIN branch
+ON employee.emp_id = branch.mgr_id;
+
+# NESTED QUERIES
+
+#Task 1 Find names of all employees who have sold over 30k to a single client
+
+SELECT employee.first_name, employee.last_name FROM employee
+WHERE employee.emp_id IN (
+	SELECT works_with.emp_id FROM works_with
+	WHERE works_with.total_sales > 30000
+);
+
+
+#Another way of doing this without nested query
+SELECT employee.emp_id, employee.first_name, employee.last_name, works_with.client_id, works_with.total_sales FROM employee
+JOIN works_with
+ON employee.emp_id = works_with.emp_id
+WHERE total_sales > 30000;
+
+#Task 2 Find all clients who are handled by the branch that Micheal Scott manages, Assume you know Micheal's id
+
+SELECT client.client_name FROM client
+WHERE client.branch_id IN (
+	SELECT branch.branch_id FROM branch
+	WHERE branch.mgr_id = 102
+);
+
+
+
+
