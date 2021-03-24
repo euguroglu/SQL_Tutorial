@@ -26,5 +26,8 @@ CREATE TABLE student (
 
 INSERT INTO student(name, major) VALUES('Alex','Physic');
 INSERT INTO student(name, major) VALUES('Osman','Engineer');
+INSERT INTO student(name, major) VALUES('Jennifer', 'Biology');
+INSERT INTO student(name, major) VALUES('Fatih','Computer Science');
+INSERT INTO student(name, major) VALUES('Mike','Biology');
 
 SELECT * FROM student;
